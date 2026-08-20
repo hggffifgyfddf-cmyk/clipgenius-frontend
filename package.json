@@ -1,0 +1,30 @@
+{
+  "name": "clipgenius-frontend",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "@clerk/nextjs": "^6.39.6",
+    "@heroicons/react": "^2.2.0",
+    "@paddle/paddle-node-sdk": "^3.6.1",
+    "@supabase/supabase-js": "^2.109.0",
+    "critters": "^0.0.23",
+    "date-fns": "^4.4.0",
+    "dotenv": "^17.2.4",
+    "framer-motion": "^13.0.0",
+    "lucide-react": "^0.563.0",
+    "next": "16.1.6",
+    "node-fetch": "^3.3.2",
+    "react": "19.2.3",
+    "react-dom": "19.2.3"
+  },
+  "devDependencies": {
+    "eslint": "^9",
+    "eslint-config-next": "16.1.6"
+  }
+}
