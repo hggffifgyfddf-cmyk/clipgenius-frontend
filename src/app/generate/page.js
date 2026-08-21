@@ -269,7 +269,8 @@ function StepUpload({ file, setFile, youtubeUrl, setYoutubeUrl, onNext, isUpload
 
 function StepSettings({
   clipLength, setClipLength, maxClips, setMaxClips, ratio, setRatio, subtitleOn, setSubtitleOn,
-  subtitleColor, setSubtitleColor, acceptTerms, setAcceptTerms, credits, onBack, onGenerate, generating,
+  subtitleColor, setSubtitleColor, subtitleStyle, setSubtitleStyle, subtitleHighlightColor, setSubtitleHighlightColor,
+  acceptTerms, setAcceptTerms, credits, onBack, onGenerate, generating,
 }) {
   const subtitleColors = [
     { id: "white", color: "#ffffff", label: "Aa" },
@@ -277,6 +278,14 @@ function StepSettings({
     { id: "green", color: "#22c55e", label: "Aa" },
     { id: "red", color: "#ef4444", label: "Aa" },
     { id: "blue", color: "#3b82f6", label: "Aa" },
+  ];
+
+  const highlightColors = [
+    { id: "red", color: "#ef4444", label: "Aa" },
+    { id: "yellow", color: "#facc15", label: "Aa" },
+    { id: "green", color: "#22c55e", label: "Aa" },
+    { id: "blue", color: "#3b82f6", label: "Aa" },
+    { id: "white", color: "#ffffff", label: "Aa" },
   ];
 
   const canGenerate = acceptTerms && credits >= maxClips;
@@ -353,8 +362,8 @@ function StepSettings({
               <div style={{ fontSize: 14, fontWeight: 600, color: theme.text, marginBottom: 16, display: "flex", alignItems: "center", gap: 8 }}>
                 <span style={{ color: theme.accent }}>✨</span> AI Features
               </div>
-              <div style={{ display: "flex", gap: 48, alignItems: "center" }}>
-                <div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 24, alignItems: "flex-start" }}>
+                <div style={{ minWidth: 160 }}>
                   <InputLabel tooltip>Subtitles</InputLabel>
                   <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
                     <button
@@ -374,32 +383,86 @@ function StepSettings({
                 </div>
 
                 {subtitleOn && (
-                  <div>
-                    <InputLabel tooltip>Subtitle Style</InputLabel>
-                    <div style={{ display: "flex", gap: 8 }}>
-                      <div
-                         onClick={() => setSubtitleColor("black")}
-                         style={{
-                           width: 32, height: 32, borderRadius: 8, background: "#111", display: "flex", alignItems: "center", justifyContent: "center",
-                           border: subtitleColor === "black" ? `2px solid ${theme.accent}` : `1px solid ${theme.borderLight}`,
-                           cursor: "pointer", fontSize: 12, color: "#FFF", fontWeight: 600
-                         }}
-                      >Aa</div>
-                      {subtitleColors.map((c) => (
-                        <div
-                          key={c.id}
-                          onClick={() => setSubtitleColor(c.id)}
+                  <>
+                    <div>
+                      <InputLabel tooltip="Subtitle Style">Subtitle Style</InputLabel>
+                      <div style={{ display: "flex", gap: 8 }}>
+                        <button
+                          onClick={() => setSubtitleStyle("normal")}
                           style={{
-                            width: 32, height: 32, borderRadius: 8, background: c.color, display: "flex", alignItems: "center", justifyContent: "center",
-                            border: subtitleColor === c.id ? `2px solid ${theme.accent}` : `1px solid ${theme.borderLight}`,
-                            cursor: "pointer", fontSize: 12, color: c.id === "white" || c.id === "yellow" ? "#000" : "#FFF", fontWeight: 600
+                            padding: "6px 16px", borderRadius: 8,
+                            background: subtitleStyle === "normal" ? theme.accent : theme.borderLight,
+                            color: subtitleStyle === "normal" ? "#FFF" : theme.textSecondary,
+                            border: "none", fontSize: 13, fontWeight: 500, cursor: "pointer"
                           }}
                         >
-                          {c.label}
-                        </div>
-                      ))}
+                          Normal
+                        </button>
+                        <button
+                          onClick={() => setSubtitleStyle("highlighted")}
+                          style={{
+                            padding: "6px 16px", borderRadius: 8,
+                            background: subtitleStyle === "highlighted" ? theme.accent : theme.borderLight,
+                            color: subtitleStyle === "highlighted" ? "#FFF" : theme.textSecondary,
+                            border: "none", fontSize: 13, fontWeight: 500, cursor: "pointer"
+                          }}
+                        >
+                          Karaoke
+                        </button>
+                      </div>
+                      <div style={{ fontSize: 11, color: theme.textTertiary, marginTop: 6 }}>
+                        {subtitleStyle === "normal" ? "Each word appears only when spoken" : "All words visible, current word highlighted"}
+                      </div>
                     </div>
-                  </div>
+
+                    <div>
+                      <InputLabel tooltip="Subtitle Color">Text Color</InputLabel>
+                      <div style={{ display: "flex", gap: 8 }}>
+                        <div
+                          onClick={() => setSubtitleColor("black")}
+                          style={{
+                            width: 32, height: 32, borderRadius: 8, background: "#111", display: "flex", alignItems: "center", justifyContent: "center",
+                            border: subtitleColor === "black" ? `2px solid ${theme.accent}` : `1px solid ${theme.borderLight}`,
+                            cursor: "pointer", fontSize: 12, color: "#FFF", fontWeight: 600
+                          }}
+                        >Aa</div>
+                        {subtitleColors.map((c) => (
+                          <div
+                            key={c.id}
+                            onClick={() => setSubtitleColor(c.id)}
+                            style={{
+                              width: 32, height: 32, borderRadius: 8, background: c.color, display: "flex", alignItems: "center", justifyContent: "center",
+                              border: subtitleColor === c.id ? `2px solid ${theme.accent}` : `1px solid ${theme.borderLight}`,
+                              cursor: "pointer", fontSize: 12, color: c.id === "white" || c.id === "yellow" ? "#000" : "#FFF", fontWeight: 600
+                            }}
+                          >
+                            {c.label}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {subtitleStyle === "highlighted" && (
+                      <div>
+                        <InputLabel tooltip="Highlight Color">Highlight Color</InputLabel>
+                        <div style={{ display: "flex", gap: 8 }}>
+                          {highlightColors.map((c) => (
+                            <div
+                              key={c.id}
+                              onClick={() => setSubtitleHighlightColor(c.id)}
+                              style={{
+                                width: 32, height: 32, borderRadius: 8, background: c.color, display: "flex", alignItems: "center", justifyContent: "center",
+                                border: subtitleHighlightColor === c.id ? `2px solid ${theme.accent}` : `1px solid ${theme.borderLight}`,
+                                cursor: "pointer", fontSize: 12, color: c.id === "white" || c.id === "yellow" ? "#000" : "#FFF", fontWeight: 600
+                              }}
+                            >
+                              {c.label}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
             </div>
@@ -454,6 +517,23 @@ function StepSettings({
                 <span style={{ color: theme.textSecondary, display: "flex", alignItems: "center", gap: 8 }}>CC Subtitles</span>
                 <span style={{ color: theme.text, fontWeight: 500 }}>{subtitleOn ? "On" : "Off"}</span>
               </div>
+              {subtitleOn && (
+                <>
+                  <div style={{ display: "flex", justifyContent: "space-between" }}>
+                    <span style={{ color: theme.textSecondary, display: "flex", alignItems: "center", gap: 8 }}>Subtitle Style</span>
+                    <span style={{ color: theme.text, fontWeight: 500 }}>{subtitleStyle === "normal" ? "Normal" : "Karaoke"}</span>
+                  </div>
+                  {subtitleStyle === "highlighted" && (
+                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                      <span style={{ color: theme.textSecondary, display: "flex", alignItems: "center", gap: 8 }}>Highlight Color</span>
+                      <span style={{ color: theme.text, fontWeight: 500, display: "flex", alignItems: "center", gap: 6 }}>
+                        <span style={{ display: "inline-block", width: 14, height: 14, borderRadius: 4, background: subtitleHighlightColor }}></span>
+                        {subtitleHighlightColor}
+                      </span>
+                    </div>
+                  )}
+                </>
+              )}
               <div style={{ height: 1, background: theme.borderLight, margin: "4px 0" }} />
               <div style={{ display: "flex", justifyContent: "space-between" }}>
                 <span style={{ color: theme.textSecondary, display: "flex", alignItems: "center", gap: 8 }}>🪙 Credits Required</span>
@@ -490,6 +570,7 @@ function StepSettings({
               <li>9:16 ratio gets more views on mobile</li>
               <li>AI will find the most viral moments</li>
               <li>Subtitles increase engagement by 80%</li>
+              <li>Karaoke style highlights words as they're spoken</li>
             </ul>
           </div>
 
@@ -674,6 +755,8 @@ export default function GeneratePage() {
   const [ratio, setRatio] = useState("9:16");
   const [subtitleOn, setSubtitleOn] = useState(true);
   const [subtitleColor, setSubtitleColor] = useState("white");
+  const [subtitleStyle, setSubtitleStyle] = useState("normal");
+  const [subtitleHighlightColor, setSubtitleHighlightColor] = useState("red");
   const [acceptTerms, setAcceptTerms] = useState(false);
   const [credits, setCredits] = useState(0);
   const [loadingCredits, setLoadingCredits] = useState(false);
@@ -890,7 +973,9 @@ export default function GeneratePage() {
           maxClips, 
           ratio, 
           subtitleOn, 
-          subtitleColor, 
+          subtitleColor,
+          subtitleStyle,
+          subtitleHighlightColor,
           videoPath, 
           youtubeUrl 
         }),
@@ -1011,6 +1096,10 @@ export default function GeneratePage() {
                 setSubtitleOn={setSubtitleOn}
                 subtitleColor={subtitleColor}
                 setSubtitleColor={setSubtitleColor}
+                subtitleStyle={subtitleStyle}
+                setSubtitleStyle={setSubtitleStyle}
+                subtitleHighlightColor={subtitleHighlightColor}
+                setSubtitleHighlightColor={setSubtitleHighlightColor}
                 acceptTerms={acceptTerms}
                 setAcceptTerms={setAcceptTerms}
                 credits={credits}
